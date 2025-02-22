@@ -25,71 +25,77 @@ LangFlow is a powerful tool for building AI chatbots using a drag-and-drop inter
 
         <Accordion title="Code Block">
           <CodeGroup>
-          ```python Pactory Input
-          import json
-          from langflow.base.io.text import TextComponent
-          from langflow.io import MultilineInput, Output
-          from langflow.schema.message import Message
-          from langflow.utils.constants import MESSAGE_SENDER_AI, MESSAGE_SENDER_USER
-          from langflow.field_typing import BaseChatMessageHistory
-          from langchain.memory import ChatMessageHistory
+                ```python Pactory Input
+                import json
+                from langflow.base.io.text import TextComponent
+                from langflow.io import MultilineInput, Output
+                from langflow.schema.message import Message
+                from langflow.utils.constants import MESSAGE_SENDER_AI, MESSAGE_SENDER_USER
+                from langflow.field_typing import BaseChatMessageHistory
+                from langchain.memory import ChatMessageHistory
 
 
-          class ParseInputComponent(TextComponent):
-              display_name = "Parse Input"
-              description = "Parse JSON input containing userId, redirectUrl, and messages into separate outputs."
-              icon = "type"
-              name = "ParseInput"
+                class ParseInputComponent(TextComponent):
+                    display_name = "Parse Input"
+                    description = "Parse JSON input containing userId, redirectUrl, messages, and uploads into separate outputs."
+                    icon = "type"
+                    name = "ParseInput"
 
-              inputs = [
-                  MultilineInput(
-                      name="input_value",
-                      display_name="JSON Input",
-                      info="JSON containing userId, redirectUrl, and messages array.",
-                  ),
-              ]
-              
-              outputs = [
-                  Output(display_name="User ID", name="user_id", method="get_user_id"),
-                  Output(display_name="Redirect URL", name="redirect_url", method="get_redirect_url"),
-                  Output(display_name="Chat History", name="chat_history", method="get_chat_history"),
-              ]
+                    inputs = [
+                        MultilineInput(
+                            name="input_value",
+                            display_name="JSON Input",
+                            info="JSON containing userId, redirectUrl, messages array, and uploads array.",
+                        ),
+                    ]
+                    
+                    outputs = [
+                        Output(display_name="User ID", name="user_id", method="get_user_id"),
+                        Output(display_name="Redirect URL", name="redirect_url", method="get_redirect_url"),
+                        Output(display_name="Chat History", name="chat_history", method="get_chat_history"),
+                        Output(display_name="Uploads", name="uploads", method="get_uploads"),
+                    ]
 
-              def parse_json(self):
-                  try:
-                      if not hasattr(self, '_parsed_data'):
-                          self._parsed_data = json.loads(self.input_value)
-                      return self._parsed_data
-                  except json.JSONDecodeError:
-                      self.status = "Invalid JSON input"
-                      return {"userId": "default", "redirectUrl": "", "messages": []}
+                    def parse_json(self):
+                        try:
+                            if not hasattr(self, '_parsed_data'):
+                                self._parsed_data = json.loads(self.input_value)
+                            return self._parsed_data
+                        except json.JSONDecodeError:
+                            self.status = "Invalid JSON input"
+                            return {"userId": "default", "redirectUrl": "", "messages": [], "uploads": []}
 
-              def get_user_id(self) -> Message:
-                  data = self.parse_json()
-                  user_id = data.get("userId", "default")
-                  return Message(text=user_id)
+                    def get_user_id(self) -> Message:
+                        data = self.parse_json()
+                        user_id = data.get("userId", "default")
+                        return Message(text=user_id)
 
-              def get_redirect_url(self) -> Message:
-                  data = self.parse_json()
-                  redirect_url = data.get("redirectUrl", "")
-                  return Message(text=redirect_url)
+                    def get_redirect_url(self) -> Message:
+                        data = self.parse_json()
+                        redirect_url = data.get("redirectUrl", "")
+                        return Message(text=redirect_url)
 
-              def get_chat_history(self) -> Message:
-                  data = self.parse_json()
-                  formatted_messages = []
-                  
-                  for msg in data.get("messages", []):
-                      text = msg.get("text", "")
-                      sender = msg.get("sender", "HUMAN")
-                      
-                      if sender.upper() in ["AI", MESSAGE_SENDER_AI]:
-                          formatted_messages.append(f"AI: {text}")
-                      else:
-                          formatted_messages.append(f"User: {text}")
+                    def get_chat_history(self) -> Message:
+                        data = self.parse_json()
+                        formatted_messages = []
+                        
+                        for msg in data.get("messages", []):
+                            text = msg.get("text", "")
+                            sender = msg.get("sender", "HUMAN")
+                            
+                            if sender.upper() in ["AI", MESSAGE_SENDER_AI]:
+                                formatted_messages.append(f"AI: {text}")
+                            else:
+                                formatted_messages.append(f"User: {text}")
 
-                  chat_history = "\n".join(formatted_messages)
-                  return Message(text=chat_history) 
-          ```
+                        chat_history = "\n".join(formatted_messages)
+                        return Message(text=chat_history)
+
+                    def get_uploads(self) -> Message:
+                        data = self.parse_json()
+                        uploads = data.get("uploads", [])
+                        return Message(text=json.dumps(uploads)) 
+                    ```
           </CodeGroup>
         </Accordion>
       </Tab>
@@ -102,70 +108,76 @@ LangFlow is a powerful tool for building AI chatbots using a drag-and-drop inter
         <Accordion title="Code Blocks">
           <CodeGroup>
           ```python Pactory Input
-          import json
-          from langflow.base.io.text import TextComponent
-          from langflow.io import MultilineInput, Output
-          from langflow.schema.message import Message
-          from langflow.utils.constants import MESSAGE_SENDER_AI, MESSAGE_SENDER_USER
-          from langflow.field_typing import BaseChatMessageHistory
-          from langchain.memory import ChatMessageHistory
+                import json
+                from langflow.base.io.text import TextComponent
+                from langflow.io import MultilineInput, Output
+                from langflow.schema.message import Message
+                from langflow.utils.constants import MESSAGE_SENDER_AI, MESSAGE_SENDER_USER
+                from langflow.field_typing import BaseChatMessageHistory
+                from langchain.memory import ChatMessageHistory
 
 
-          class ParseInputComponent(TextComponent):
-              display_name = "Parse Input"
-              description = "Parse JSON input containing userId, redirectUrl, and messages into separate outputs."
-              icon = "type"
-              name = "ParseInput"
+                class ParseInputComponent(TextComponent):
+                    display_name = "Parse Input"
+                    description = "Parse JSON input containing userId, redirectUrl, messages, and uploads into separate outputs."
+                    icon = "type"
+                    name = "ParseInput"
 
-              inputs = [
-                  MultilineInput(
-                      name="input_value",
-                      display_name="JSON Input",
-                      info="JSON containing userId, redirectUrl, and messages array.",
-                  ),
-              ]
-              
-              outputs = [
-                  Output(display_name="User ID", name="user_id", method="get_user_id"),
-                  Output(display_name="Redirect URL", name="redirect_url", method="get_redirect_url"),
-                  Output(display_name="Chat History", name="chat_history", method="get_chat_history"),
-              ]
+                    inputs = [
+                        MultilineInput(
+                            name="input_value",
+                            display_name="JSON Input",
+                            info="JSON containing userId, redirectUrl, messages array, and uploads array.",
+                        ),
+                    ]
+                    
+                    outputs = [
+                        Output(display_name="User ID", name="user_id", method="get_user_id"),
+                        Output(display_name="Redirect URL", name="redirect_url", method="get_redirect_url"),
+                        Output(display_name="Chat History", name="chat_history", method="get_chat_history"),
+                        Output(display_name="Uploads", name="uploads", method="get_uploads"),
+                    ]
 
-              def parse_json(self):
-                  try:
-                      if not hasattr(self, '_parsed_data'):
-                          self._parsed_data = json.loads(self.input_value)
-                      return self._parsed_data
-                  except json.JSONDecodeError:
-                      self.status = "Invalid JSON input"
-                      return {"userId": "default", "redirectUrl": "", "messages": []}
+                    def parse_json(self):
+                        try:
+                            if not hasattr(self, '_parsed_data'):
+                                self._parsed_data = json.loads(self.input_value)
+                            return self._parsed_data
+                        except json.JSONDecodeError:
+                            self.status = "Invalid JSON input"
+                            return {"userId": "default", "redirectUrl": "", "messages": [], "uploads": []}
 
-              def get_user_id(self) -> Message:
-                  data = self.parse_json()
-                  user_id = data.get("userId", "default")
-                  return Message(text=user_id)
+                    def get_user_id(self) -> Message:
+                        data = self.parse_json()
+                        user_id = data.get("userId", "default")
+                        return Message(text=user_id)
 
-              def get_redirect_url(self) -> Message:
-                  data = self.parse_json()
-                  redirect_url = data.get("redirectUrl", "")
-                  return Message(text=redirect_url)
+                    def get_redirect_url(self) -> Message:
+                        data = self.parse_json()
+                        redirect_url = data.get("redirectUrl", "")
+                        return Message(text=redirect_url)
 
-              def get_chat_history(self) -> Message:
-                  data = self.parse_json()
-                  formatted_messages = []
-                  
-                  for msg in data.get("messages", []):
-                      text = msg.get("text", "")
-                      sender = msg.get("sender", "HUMAN")
-                      
-                      if sender.upper() in ["AI", MESSAGE_SENDER_AI]:
-                          formatted_messages.append(f"AI: {text}")
-                      else:
-                          formatted_messages.append(f"User: {text}")
+                    def get_chat_history(self) -> Message:
+                        data = self.parse_json()
+                        formatted_messages = []
+                        
+                        for msg in data.get("messages", []):
+                            text = msg.get("text", "")
+                            sender = msg.get("sender", "HUMAN")
+                            
+                            if sender.upper() in ["AI", MESSAGE_SENDER_AI]:
+                                formatted_messages.append(f"AI: {text}")
+                            else:
+                                formatted_messages.append(f"User: {text}")
 
-                  chat_history = "\n".join(formatted_messages)
-                  return Message(text=chat_history) 
-          ```
+                        chat_history = "\n".join(formatted_messages)
+                        return Message(text=chat_history)
+
+                    def get_uploads(self) -> Message:
+                        data = self.parse_json()
+                        uploads = data.get("uploads", [])
+                        return Message(text=json.dumps(uploads)) 
+                    ```
 
           ```python Pactory Output
           from typing import TYPE_CHECKING, cast
