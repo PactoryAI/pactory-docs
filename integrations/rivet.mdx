@@ -1,0 +1,64 @@
+---
+title: 'Rivet'
+description: 'Connect your Rivet AI agents to Pactory'
+og:image: 'https://pactory.ai/pactory-Rivet.png'
+---
+
+## Overview
+
+Rivet is a tool for building AI Agents. This integration allows you to connect your Rivet agents to Pactory, distribute and monetize them.
+
+## Prerequisites
+
+- Deployed rivet server
+- Pactory account
+
+## Step-by-Step Walkthrough
+
+<Steps>
+  <Step title="Create Rivet graph">
+    Create a Rivet graph
+  </Step>
+  <Step title="Set up the graph">
+      <Steps>
+  <Step title="Add Graph Input node">
+    Add a Graph Input node to your graph, and set the following properties:
+        <CodeGroup>
+            ```json Graph Input Node
+            { "ID": "messages", "Data Type": "chat-message[]" }
+            ```
+    </CodeGroup>
+  </Step>
+  <Step title="Add Graph Output node">
+    Add a Graph Output node to your graph, and set the following properties:
+        <CodeGroup>
+            ```json Graph Output Node
+            { "ID": "output", "Data Type": "string" }
+            ```
+    </CodeGroup>
+  </Step>
+  </Steps>
+
+  </Step>
+  <Step title="Access Integration">
+    From your Pactory dashboard, go to "Add New Agent" and select "Rivet"
+  </Step>
+  <Step title="Configure Basic Settings">
+    Fill in the [standard agent configuration fields](/features/agent-connection) (name, description, etc.)
+  </Step>
+  <Step title="Configure Integration">
+    Enter your Rivet-specific configuration:
+    - Rivet server URL
+    - Rivet Graph ID (Optional)
+    - Rivet API key (Optional)
+  </Step>
+  <Step title="Publish your agent">
+    Set privacy to "Public"
+  </Step>
+  <Step title="Test Connection">
+    Send a test message to verify the integration is working properly
+  </Step>
+  <Step title="Share your agent and get paid based on usage!">
+  </Step>
+</Steps>
+

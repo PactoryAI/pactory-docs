@@ -69,6 +69,7 @@
         "integrations/beamlit",
         "integrations/relevance",
         "integrations/n8n",
+        "integrations/rivet",
         "integrations/voker",
         "integrations/custom-api"
       ]
