@@ -66,7 +66,7 @@
         "integrations/flowise",
         "integrations/langflow",
         "integrations/chatbotkit",
-        "integrations/beamlit",
+        "integrations/blaxel",
         "integrations/relevance",
         "integrations/n8n",
         "integrations/rivet",
